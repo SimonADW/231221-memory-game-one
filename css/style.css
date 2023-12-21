@@ -12,10 +12,21 @@ main {
 	align-items: center;
 }
 
+.game-container {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 0.2rem;
+}
+
 .memory-card {
 	width: 10rem;
 	height: 10rem;
 	background-size: cover;
 	/* background: radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223)); */
+}
+
+.memory-card:hover {
+	box-shadow: 0 0 3px black;
+	cursor: pointer;
 }
 
