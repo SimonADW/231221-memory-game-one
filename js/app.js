@@ -15,8 +15,11 @@ const renderCards = ()=> {
 			const card = document.createElement("div");
 			card.className = "memory-card";
 			card.dataset.pair = index;
+			card.style.order = Math.floor(Math.random() * imagesArray.length)
 			card.style.backgroundImage = `url(${image})`;
+			
 			cardContainer.appendChild(card);
+
 		};
 	});
 };
