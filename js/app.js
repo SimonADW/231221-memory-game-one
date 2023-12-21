@@ -14,9 +14,8 @@ const renderCards = ()=> {
 		for (let i = 0; i < 2; i++) {
 			const card = document.createElement("div");
 			card.className = "memory-card";
-			card.dataset.pair = index;
+			card.dataset.pairId = index;
 			card.style.order = Math.floor(Math.random() * imagesArray.length)
-			// card.style.backgroundImage = `url(${image})`;			
 			cardContainer.appendChild(card);
 		};
 	});
@@ -24,15 +23,55 @@ const renderCards = ()=> {
 
 renderCards();
 
-const memoryCards = document.querySelectorAll(".memory-card");
+let attemptCounter = 0;
+let flipCounter = 0;
+let currentlyFlippedCards = [];
 
-const flipCard = (flippedCard)=> {	
-	flippedCard.style.backgroundImage = `url(${imagesArray[event.currentTarget.dataset.pair]})`
+let memoryCards = document.querySelectorAll(".memory-card");
+
+const flipCard = (flippedCard)=> {		
+	currentlyFlippedCards.push(flippedCard);
+	if (flipCounter < 2) {
+		flipCounter++;		
+	} else {
+		flipCounter = 0;
+		currentlyFlippedCards = [];;
+		flipUnpairedCardsBack();
+	}		
+
+	if (flipCounter === 2 && currentlyFlippedCards[0].dataset.pairId === currentlyFlippedCards[1].dataset.pairId) {
+		console.log("Match");
+		currentlyFlippedCards.forEach((flippedCard)=> {	
+			flippedCard.dataset.pairIdMatched = "true";
+		})
+	}
+
+	flippedCard.style.backgroundImage = `url(${imagesArray[event.currentTarget.dataset.pairId]})`
 };
+
+
+const flipUnpairedCardsBack = ()=> {
+		memoryCards = document.querySelectorAll(".memory-card");
+		memoryCards.forEach((card) => {
+			if (card.dataset.pairIdMatched !== "true") {
+				card.style.background = "radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223))";	
+				card.style.backgroundSize = "cover";
+			};
+
+		});
+		flipCounter = 0;
+		currentlyFlippedCards = [];
+}
+
+const markPairedCards = ()=> {
+	attemptCounter++;
+}
 
 memoryCards.forEach((card) => {
 	card.addEventListener("click", ()=> {
-		flipCard(card);
+		flipCard(event.currentTarget);			
+		setTimeout(()=>{
+			flipUnpairedCardsBack()}, 3000)
 	});
 });
 
