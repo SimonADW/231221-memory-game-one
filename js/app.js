@@ -16,12 +16,24 @@ const renderCards = ()=> {
 			card.className = "memory-card";
 			card.dataset.pair = index;
 			card.style.order = Math.floor(Math.random() * imagesArray.length)
-			card.style.backgroundImage = `url(${image})`;
-			
+			// card.style.backgroundImage = `url(${image})`;			
 			cardContainer.appendChild(card);
-
 		};
 	});
 };
 
 renderCards();
+
+const memoryCards = document.querySelectorAll(".memory-card");
+
+const flipCard = (flippedCard)=> {	
+	flippedCard.style.backgroundImage = `url(${imagesArray[event.currentTarget.dataset.pair]})`
+};
+
+memoryCards.forEach((card) => {
+	card.addEventListener("click", ()=> {
+		flipCard(card);
+	});
+});
+
+
