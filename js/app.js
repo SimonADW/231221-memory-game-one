@@ -26,10 +26,12 @@ renderCards();
 let attemptCounter = 0;
 let flipCounter = 0;
 let currentlyFlippedCards = [];
+let timeoutId = undefined;
 
 let memoryCards = document.querySelectorAll(".memory-card");
 
 const flipCard = (flippedCard)=> {		
+	clearInterval(timeoutId)
 	currentlyFlippedCards.push(flippedCard);
 	if (flipCounter < 2) {
 		flipCounter++;		
@@ -69,8 +71,9 @@ const markPairedCards = ()=> {
 
 memoryCards.forEach((card) => {
 	card.addEventListener("click", ()=> {
+		
 		flipCard(event.currentTarget);			
-		setTimeout(()=>{
+		timeoutId = setTimeout(()=>{
 			flipUnpairedCardsBack()}, 3000)
 	});
 });
