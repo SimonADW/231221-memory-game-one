@@ -28,12 +28,15 @@ let currentlyFlippedCards = [];
 let timeoutId = undefined;
 
 let memoryCards = document.querySelectorAll(".memory-card");
+let gameOverMessage = document.querySelector("span");
 
 const limitAttempts = ()=> {
-	if (attemptCounter > 10) {
-		alert("Game Over, sucker!");
+	if (attemptCounter > 3) {
+		gameOverMessage.classList.remove("hidden");
 
-		setTimeout((window.location.reload()), 2000)
+		setTimeout(()=>{
+			window.location.reload();
+		}, 4000)
 	}
 }
 
@@ -41,7 +44,6 @@ const matchPair = ()=> {
 	if (currentlyFlippedCards.length >= 2 && (currentlyFlippedCards[0].dataset.pairId === currentlyFlippedCards[1].dataset.pairId)) {
 		currentlyFlippedCards.forEach((matchedCard)=> {
 			matchedCard.dataset.pairIdMatched = "true";
-			console.log(matchedCard.dataset.pairIdMatched);
 		});
 		currentlyFlippedCards = [];
 	};
