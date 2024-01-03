@@ -26,15 +26,52 @@ renderCards();
 
 let timeoutId = undefined;
 let memoryCards = document.querySelectorAll(".memory-card");
+let isFlipped = false;
+let firstCard = undefined;
+let secondCard = undefined;
+let isMatch = false;
 
+const matchPair = ()=> {
+	isMatch = firstCard.dataset.pairId === secondCard.dataset.pairId;
+
+	if (isMatch) {
+		console.log("Match!");
+		disableClickListeners();
+		return;
+	}
+}
 
 const flipCard = (flippedCard)=> {		
+	clearTimeout(timeoutId);	
+	if (!isFlipped) {
+		firstCard = event.currentTarget;		
+		isFlipped = true;
+		
+	}
 
+	secondCard = event.currentTarget;
 	flippedCard.style.backgroundImage = `url(${imagesArray[event.currentTarget.dataset.pairId]})`;
+	matchPair();
 };
 
-const flipUnpairedCardsBack = ()=> {
+const disableOtherCards = ()=> {
 
+}
+
+const disableClickListeners = ()=> {
+	firstCard.removeEventListener("click", flipCard)
+	secondCard.removeEventListener("click", flipCard)
+}
+
+const flipUnpairedCardsBack = ()=> {
+	if (!isMatch) {
+		console.log("not match");
+		firstCard.style.background = "radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223))";
+		firstCard.style.backgroundSize = "cover";
+		secondCard.style.background = "radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223))";
+		secondCard.style.backgroundSize = "cover";
+	}
+	isFlipped = false;
 }
 
 
