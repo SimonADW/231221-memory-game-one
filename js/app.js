@@ -33,7 +33,9 @@ let gameOverMessage = document.querySelector("span");
 const limitAttempts = ()=> {
 	if (attemptCounter > 8) {
 		gameOverMessage.classList.remove("hidden");
-
+		memoryCards.forEach((card) => {
+			card.removeEventListener("click", flipCard)});
+		
 		setTimeout(()=>{
 			window.location.reload();
 		}, 4000)
@@ -59,7 +61,7 @@ const matchPair = ()=> {
 
 const flipCard = (flippedCard)=> {		
 	if (event.currentTarget === currentlyFlippedCards[0]) return;
-	clearInterval(timeoutId);
+	clearTimeout(timeoutId);
 	disableActiveCard(flippedCard);
 	currentlyFlippedCards.push(flippedCard);		
 	matchPair();	
