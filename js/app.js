@@ -31,7 +31,7 @@ let memoryCards = document.querySelectorAll(".memory-card");
 let gameOverMessage = document.querySelector("span");
 
 const limitAttempts = ()=> {
-	if (attemptCounter > 3) {
+	if (attemptCounter > 8) {
 		gameOverMessage.classList.remove("hidden");
 
 		setTimeout(()=>{
@@ -54,6 +54,7 @@ const flipCard = (flippedCard)=> {
 	clearInterval(timeoutId);
 	currentlyFlippedCards.push(flippedCard);		
 	matchPair();	
+	flippedCard.classList.add("flip");
 	flippedCard.style.backgroundImage = `url(${imagesArray[event.currentTarget.dataset.pairId]})`;
 
 	if (currentlyFlippedCards.length > 2) { 
@@ -81,8 +82,10 @@ memoryCards.forEach((card) => {
 		
 		flipCard(event.currentTarget);	
 		
-		timeoutId = setTimeout(()=>{
-			flipUnpairedCardsBack()}, 2000);		
+		if (currentlyFlippedCards.length >= 2) {
+			timeoutId = setTimeout(()=>{
+				flipUnpairedCardsBack()}, 2000);	
+		}	
 	});
 });
 

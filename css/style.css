@@ -30,11 +30,20 @@ main {
 	height: 10rem;
 	background: radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223));
 	background-size: cover;
+	transition: 200ms ease-out;
 }
 
 .memory-card:hover {
 	box-shadow: 0 0 3px black;
 	cursor: pointer;
+}
+
+.memory-card.flip {
+	transform: rotateY(180deg);
+  }
+
+.memory-card:active {
+	transform: scale(0.9);
 }
 
 span {
