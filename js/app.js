@@ -40,6 +40,14 @@ const limitAttempts = ()=> {
 	}
 }
 
+const disableActiveCard = (flippedCard)=> {
+	memoryCards.forEach((card) => {
+		if (flippedCard === card) {
+			card.removeEventListener("click", flipCard);
+		}
+	});
+};
+
 const matchPair = ()=> {
 	if (currentlyFlippedCards.length >= 2 && (currentlyFlippedCards[0].dataset.pairId === currentlyFlippedCards[1].dataset.pairId)) {
 		currentlyFlippedCards.forEach((matchedCard)=> {
@@ -52,6 +60,7 @@ const matchPair = ()=> {
 const flipCard = (flippedCard)=> {		
 	if (event.currentTarget === currentlyFlippedCards[0]) return;
 	clearInterval(timeoutId);
+	disableActiveCard(flippedCard);
 	currentlyFlippedCards.push(flippedCard);		
 	matchPair();	
 	flippedCard.classList.add("flip");
@@ -64,15 +73,17 @@ const flipCard = (flippedCard)=> {
 	limitAttempts();
 };
 
-
 const flipUnpairedCardsBack = ()=> {
 		memoryCards = document.querySelectorAll(".memory-card");
+
 		memoryCards.forEach((card) => {
 			if (card.dataset.pairIdMatched !== "true") {
+				card.classList.remove("flip");
 				card.style.background = "radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223))";	
 				card.style.backgroundSize = "cover";
 			};
 		});	
+
 		currentlyFlippedCards = [];
 		attemptCounter++;
 }
