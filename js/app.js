@@ -29,24 +29,36 @@ let timeoutId = undefined;
 
 let memoryCards = document.querySelectorAll(".memory-card");
 
+const limitAttempts = ()=> {
+	if (attemptCounter > 10) {
+		alert("Game Over, sucker!");
 
-const flipCard = (flippedCard)=> {		
-	clearInterval(timeoutId);
-	currentlyFlippedCards.push(flippedCard);
-	
-	
-	if (currentlyFlippedCards.length > 2 && (currentlyFlippedCards[0].dataset.pairId === currentlyFlippedCards[1].dataset.pairId)) {
+		setTimeout((window.location.reload()), 2000)
+	}
+}
+
+const matchPair = ()=> {
+	if (currentlyFlippedCards.length >= 2 && (currentlyFlippedCards[0].dataset.pairId === currentlyFlippedCards[1].dataset.pairId)) {
 		currentlyFlippedCards.forEach((matchedCard)=> {
 			matchedCard.dataset.pairIdMatched = "true";
+			console.log(matchedCard.dataset.pairIdMatched);
 		});
 		currentlyFlippedCards = [];
 	};
-	
+};
+
+const flipCard = (flippedCard)=> {		
+	if (event.currentTarget === currentlyFlippedCards[0]) return;
+	clearInterval(timeoutId);
+	currentlyFlippedCards.push(flippedCard);		
+	matchPair();	
 	flippedCard.style.backgroundImage = `url(${imagesArray[event.currentTarget.dataset.pairId]})`;
 
 	if (currentlyFlippedCards.length > 2) { 
-		flipUnpairedCardsBack();
+		flipUnpairedCardsBack();		
 	};		
+	
+	limitAttempts();
 };
 
 
@@ -59,15 +71,8 @@ const flipUnpairedCardsBack = ()=> {
 			};
 		});	
 		currentlyFlippedCards = [];
+		attemptCounter++;
 }
-
-// limitToOnePairFlipped = ()=> {
-
-// }
-
-// const limitAttempts = ()=> {
-// 	attemptCounter++;
-// }
 
 memoryCards.forEach((card) => {
 	card.addEventListener("click", ()=> {		
