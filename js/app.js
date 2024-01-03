@@ -30,6 +30,7 @@ let isFlipped = false;
 let firstCard = undefined;
 let secondCard = undefined;
 let isMatch = false;
+let lockBoard = false;
 
 const matchPair = ()=> {
 	isMatch = firstCard.dataset.pairId === secondCard.dataset.pairId;
@@ -42,11 +43,11 @@ const matchPair = ()=> {
 }
 
 const flipCard = (flippedCard)=> {		
+	if (lockBoard) return;
 	clearTimeout(timeoutId);	
 	if (!isFlipped) {
 		firstCard = event.currentTarget;		
-		isFlipped = true;
-		
+		isFlipped = true;	
 	}
 
 	secondCard = event.currentTarget;
@@ -65,7 +66,6 @@ const disableClickListeners = ()=> {
 
 const flipUnpairedCardsBack = ()=> {
 	if (!isMatch) {
-		console.log("not match");
 		firstCard.style.background = "radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223))";
 		firstCard.style.backgroundSize = "cover";
 		secondCard.style.background = "radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223))";
@@ -79,6 +79,8 @@ memoryCards.forEach((card) => {
 	card.addEventListener("click", ()=> {		
 		flipCard(event.currentTarget);	
 		
+		
+
 		timeoutId = setTimeout(()=>{
 			flipUnpairedCardsBack()}, 2000);	
 	});
