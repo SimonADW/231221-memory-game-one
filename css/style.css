@@ -35,3 +35,8 @@ main {
 	cursor: pointer;
 }
 
+.unflipped {
+	background: radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223));	
+	background-size: cover;
+}
+

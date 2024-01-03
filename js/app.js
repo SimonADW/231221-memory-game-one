@@ -23,59 +23,27 @@ const renderCards = ()=> {
 
 renderCards();
 
-let attemptCounter = 0;
-let currentlyFlippedCards = [];
-let timeoutId = undefined;
 
+let timeoutId = undefined;
 let memoryCards = document.querySelectorAll(".memory-card");
 
 
 const flipCard = (flippedCard)=> {		
-	clearInterval(timeoutId);
-	currentlyFlippedCards.push(flippedCard);
-	
-	
-	if (currentlyFlippedCards.length > 2 && (currentlyFlippedCards[0].dataset.pairId === currentlyFlippedCards[1].dataset.pairId)) {
-		currentlyFlippedCards.forEach((matchedCard)=> {
-			matchedCard.dataset.pairIdMatched = "true";
-		});
-		currentlyFlippedCards = [];
-	};
-	
-	flippedCard.style.backgroundImage = `url(${imagesArray[event.currentTarget.dataset.pairId]})`;
 
-	if (currentlyFlippedCards.length > 2) { 
-		flipUnpairedCardsBack();
-	};		
+	flippedCard.style.backgroundImage = `url(${imagesArray[event.currentTarget.dataset.pairId]})`;
 };
 
-
 const flipUnpairedCardsBack = ()=> {
-		memoryCards = document.querySelectorAll(".memory-card");
-		memoryCards.forEach((card) => {
-			if (card.dataset.pairIdMatched !== "true") {
-				card.style.background = "radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223))";	
-				card.style.backgroundSize = "cover";
-			};
-		});	
-		currentlyFlippedCards = [];
+
 }
 
-// limitToOnePairFlipped = ()=> {
-
-// }
-
-// const limitAttempts = ()=> {
-// 	attemptCounter++;
-// }
 
 memoryCards.forEach((card) => {
 	card.addEventListener("click", ()=> {		
-		
 		flipCard(event.currentTarget);	
 		
 		timeoutId = setTimeout(()=>{
-			flipUnpairedCardsBack()}, 2000);		
+			flipUnpairedCardsBack()}, 2000);	
 	});
 });
 
