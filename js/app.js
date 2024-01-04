@@ -9,6 +9,11 @@ const imagesArray = [
 	"./assets/images/wall-e-erik-mclean.jpg",
 ]
 
+let attemptCounter = 0;
+let currentlyFlippedCards = [];
+let memoryCards = [];
+let timeoutId = undefined;
+
 const renderCards = ()=> {
 	imagesArray.forEach((image, index)=> {
 		for (let i = 0; i < 2; i++) {
@@ -19,39 +24,19 @@ const renderCards = ()=> {
 			cardContainer.appendChild(card);
 		};
 	});
+
+	memoryCards = document.querySelectorAll(".memory-card");
+	memoryCards.forEach(card => card.addEventListener("click", flipCard));
 };
 
-renderCards();
-
-let attemptCounter = 0;
-let currentlyFlippedCards = [];
-let timeoutId = undefined;
-
-let memoryCards = document.querySelectorAll(".memory-card");
 let gameOverMessage = document.querySelector("span");
 
-const limitAttempts = ()=> {
-	if (attemptCounter > 8) {
-		gameOverMessage.classList.remove("hidden");
-		memoryCards.forEach((card) => {
-			card.removeEventListener("click", flipCard)});
-		
-		setTimeout(()=>{
-			window.location.reload();
-		}, 4000)
-	}
-}
-
-const disableActiveCard = (flippedCard)=> {
-	memoryCards.forEach((card) => {
-		if (flippedCard === card) {
-			card.removeEventListener("click", flipCard);
-		}
-	});
-};
-
 const matchPair = ()=> {
-	if (currentlyFlippedCards.length >= 2 && (currentlyFlippedCards[0].dataset.pairId === currentlyFlippedCards[1].dataset.pairId)) {
+	if (
+		currentlyFlippedCards.length >= 2 &&
+		currentlyFlippedCards[0].dataset.pairId ===
+		 currentlyFlippedCards[1].dataset.pairId
+	) {
 		currentlyFlippedCards.forEach((matchedCard)=> {
 			matchedCard.dataset.pairIdMatched = "true";
 		});
@@ -59,47 +44,63 @@ const matchPair = ()=> {
 	};
 };
 
+const checkForWin = ()=> {
+	return Array.from(memoryCards).every(card => card.classList.contains("is-flipped"));
+}
+
+const limitAttempts = ()=> {
+	if (attemptCounter > 8) {
+		gameOverMessage.classList.replace("hidden", "display");
+				
+		setTimeout(()=>{
+			window.location.reload();
+		}, 4000)
+	}
+}
+
 const flipCard = (flippedCard)=> {		
-	if (event.currentTarget === currentlyFlippedCards[0]) return;
+	const cardDOM = flippedCard.currentTarget;
 	clearTimeout(timeoutId);
-	disableActiveCard(flippedCard);
-	currentlyFlippedCards.push(flippedCard);		
-	matchPair();	
-	flippedCard.classList.add("flip");
-	flippedCard.style.backgroundImage = `url(${imagesArray[event.currentTarget.dataset.pairId]})`;
+
+	if (cardDOM.classList.contains("is-flipped")) {
+		return;
+	}
+
+	currentlyFlippedCards.push(cardDOM);		
+	cardDOM.classList.toggle("is-flipped");	
+	cardDOM.style.backgroundImage = `url(${
+		imagesArray[cardDOM.dataset.pairId]
+	})`;
 
 	if (currentlyFlippedCards.length > 2) { 
 		flipUnpairedCardsBack();		
-	};		
+	};
 	
+	if (currentlyFlippedCards.length === 2) {
+		matchPair();	
+		attemptCounter++;
+		timeoutId = setTimeout(flipUnpairedCardsBack, 3000);
+	};
+
+	if (checkForWin()) {
+		gameOverMessage.classList.replace("hidden", "display");
+		gameOverMessage.textContent = `Game won on ${attemptCounter} attempts!`;
+	}
+
 	limitAttempts();
 };
 
 const flipUnpairedCardsBack = ()=> {
-		memoryCards = document.querySelectorAll(".memory-card");
+	memoryCards.forEach((card) => {
+		if (card.dataset.pairIdMatched !== "true") {
+			card.classList.remove("is-flipped");
+			card.style.background =
+			 "radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223))";	
+			card.style.backgroundSize = "cover";
+		};
+	});
 
-		memoryCards.forEach((card) => {
-			if (card.dataset.pairIdMatched !== "true") {
-				card.classList.remove("flip");
-				card.style.background = "radial-gradient(rgb(212, 64, 24), rgb(223, 223, 223))";	
-				card.style.backgroundSize = "cover";
-			};
-		});	
-
-		currentlyFlippedCards = [];
-		attemptCounter++;
+	currentlyFlippedCards = [];		
 }
 
-memoryCards.forEach((card) => {
-	card.addEventListener("click", ()=> {		
-		
-		flipCard(event.currentTarget);	
-		
-		if (currentlyFlippedCards.length >= 2) {
-			timeoutId = setTimeout(()=>{
-				flipUnpairedCardsBack()}, 2000);	
-		}	
-	});
-});
-
-
+renderCards();
