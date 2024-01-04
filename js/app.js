@@ -49,12 +49,16 @@ const checkForWin = ()=> {
 }
 
 const limitAttempts = ()=> {
-	if (attemptCounter > 8) {
+	if (attemptCounter > 12) {
 		gameOverMessage.classList.replace("hidden", "display");
+
+		memoryCards.forEach((card) => {
+			card.removeEventListener("click", flipCard)
+		});
 				
 		setTimeout(()=>{
 			window.location.reload();
-		}, 4000)
+		}, 5000)
 	}
 }
 
@@ -84,6 +88,7 @@ const flipCard = (flippedCard)=> {
 
 	if (checkForWin()) {
 		gameOverMessage.classList.replace("hidden", "display");
+		gameOverMessage.style.color = "rgb(0,81,104)";
 		gameOverMessage.textContent = `Game won on ${attemptCounter} attempts!`;
 	}
 
